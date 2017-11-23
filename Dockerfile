@@ -1,5 +1,6 @@
 #FROM node:9.1.0-alpine
-FROM node:7.8.0-alpine
+#FROM node:7.8.0-alpine
+FROM node:8.9.1-alpine
 
 RUN apk update && apk upgrade && apk add --no-cache git
 RUN apk update && apk upgrade && apk add --no-cache git python
