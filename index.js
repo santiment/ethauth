@@ -26,7 +26,7 @@ function createMessage(q) {
 function checkSignature(q){
     const sign = q.sign;
     const addr = q.addr || '0x612cd1Ec104273f7D3580f4D617b49D360a98Eff';
-    const hash = q.addr || web3.eth.accounts.hashMessage('Please, login as 0x612cd1ec104273f7d3580f4d617b49d360a98eff');
+    const hash = q.hash || web3.eth.accounts.hashMessage('Please, login as 0x612cd1ec104273f7d3580f4d617b49d360a98eff');
     const recovered = web3.eth.accounts.recover(hash,sign);
     return {
       addr: addr,
@@ -55,7 +55,7 @@ const CALL_SIGNER_HTML = (msg_hex, addr) =>
 module.exports = async function (request, response) {
     let req = url.parse(request.url,true);
     let q = req.query;
-    if (req.pathname=='/createmsg') {
+    if (req.pathname=='/auth-init') {
         send(response, 200, createMessage(q));
     } else if (req.pathname=='/auth-start') {
         const m = createMessage(q);
