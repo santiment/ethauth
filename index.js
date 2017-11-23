@@ -1,13 +1,17 @@
 const { send } = require('micro')
 const url = require('url');
 const Web3 = require('web3');
-const web3 = new Web3();
+const web3 = new Web3("http://localhost:8545");
 
 const SIGNIN_MSG = {
     en : "Please, login as %s",
     de : "Bitte einloggen als %s",
     ru : "Войти как %s"
 }
+
+const abi_balanceOf = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"type":"function"}];
+
+const SAN_TOKEN = new web3.eth.Contract(abi_balanceOf, '0x7C5A0CE9267ED19B22F8cae653F198e3E8daf098');
 
 function createMessage(q) {
     const addr = q.addr;
@@ -63,6 +67,9 @@ module.exports = async function (request, response) {
         send(response, 200, checkSignature(q));
     } else if (req.pathname=='/auth-reject') {
         send(response, 200, 'Authentication rejected by user for addr '+q.addr);
+    } else if (req.pathname=='/san-balance') {
+        const san_balance = await SAN_TOKEN.methods.balanceOf(q.addr).call();
+        send(response, 200, san_balance);
     } else if (req.pathname=='/login-test') {
         send(response, 200, LOGIN_TEST_HTML);
     } else {
