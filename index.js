@@ -15,9 +15,8 @@ function createMessage(q) {
     const text = SIGNIN_MSG[lang].replace('%s',addr);
     const hex = web3.utils.utf8ToHex(text);
     return {
-      hex : hex,
       text: text,
-      hash: web3.utils.sha3(hex),
+      hex : hex,
       addr: addr,
       lang: lang
     }
