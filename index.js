@@ -23,58 +23,50 @@ function createMessage(q) {
     }
 }
 
+function checkSignature(q){
+    const sign = q.sign;
+    const addr = q.addr || '0x612cd1Ec104273f7D3580f4D617b49D360a98Eff';
+    const hash = q.addr || web3.eth.accounts.hashMessage('Please, login as 0x612cd1ec104273f7d3580f4d617b49d360a98eff');
+    const recovered = web3.eth.accounts.recover(hash,sign);
+    return {
+      addr: addr,
+      recovered : recovered,
+      result : addr == recovered
+    };
+}
+
+const LOGIN_TEST_HTML = "<html><head><title>login-test</title></head><body>"
+          +   "<input type='button' onclick='location.href=\"/auth-start?addr=\"+web3.eth.accounts[0]' value='login'></input>"
+          +   "</script>"
+          + "</body></html>";
+
+const CALL_SIGNER_HTML = (msg_hex, addr) =>
+      "<html><head><title>login-test</title></head><body>"
+          + "<script> "
+          +     " web3.personal.sign("
+          +     "'"+msg_hex+"',"
+          +     "'"+addr+"',"
+          +     "function(err, sign) { "
+          +         "location.href=err?'/auth-reject?addr='+web3.eth.accounts[0]:'/auth-check?sign='+sign;"
+          +     "})"
+          + "</script>"
+      + "</body></html>";
+
 module.exports = async function (request, response) {
     let req = url.parse(request.url,true);
     let q = req.query;
-    //console.log(req);
     if (req.pathname=='/createmsg') {
         send(response, 200, createMessage(q));
-    } else if (req.pathname=='/checksign') {
-        const sign = q.sign;
-        const addr = q.addr || '0x612cd1Ec104273f7D3580f4D617b49D360a98Eff';
-        const hash = q.addr || web3.eth.accounts.hashMessage('Please, login as 0x612cd1ec104273f7d3580f4d617b49d360a98eff');
-        const recovered = web3.eth.accounts.recover(hash,sign);
-        send(response, 200, {
-          addr: addr,
-          recovered : recovered,
-          result : addr == recovered
-        });
-    } else if (req.pathname=='/recover') {
-        const result = web3.eth.accounts.recover(
-          web3.eth.accounts.hashMessage('Please, login as 0x612cd1ec104273f7d3580f4d617b49d360a98eff'),
-          "0xb162943afb4720d2ad238dac19e0702c04da069059bde57c5b26d7a358df70541086e1f77e2e01faf9c2056bd8c02fe0350a6a7cab07609b0d9c3d4c8dba7e881b"
-        );
-        send(response, 200, {
-          result : result,
-        });
-    } else if (req.pathname=='/login') {
+    } else if (req.pathname=='/auth-start') {
         const m = createMessage(q);
-        console.log(m);
-        console.log('addr='+m.addr+"&hash="+m.hash+"&sign=");
-        send(response, 200,
-          "<html><head><title>login4</title></head><body>"
-          + "<script> function execLogin(){"
-          +     "if (location.search.length==0) "
-          +       " location.href='/login?addr='+web3.eth.accounts[0];"
-          +     " else web3.personal.sign("
-              + "'"+m.hex+"',"
-              + "'"+m.addr+"',"
-              + "function(err, sign) { "
-              + "var addr=web3.eth.accounts[0];"
-              + "var hash=web3.sha3('"+m.hex+"');"
-              + "   console.log(err);"
-              + "   console.log();"
-              + "   console.log('sign>',sign);"
-              + "   console.log('sha text>',web3.sha3('"+m.text+"'));"
-              + "   console.log('sha hex0x>',web3.sha3('"+m.hex+"'));"
-              + "   console.log('sha hex>',web3.sha3('"+m.hex.substring(2)+"'));"
-              + "   location.href='/checksign?sign='+sign;"
-            + "   })"
-            + "   }"
-          + "</script>"
-          + "<input type='button' onclick='execLogin()' value='login5'></input>"
-          + "</body></html>");
-    }{
+        send(response, 200, CALL_SIGNER_HTML(m.hex, m.addr));
+    } else if (req.pathname=='/auth-check') {
+        send(response, 200, checkSignature(q));
+    } else if (req.pathname=='/auth-reject') {
+        send(response, 200, 'Authentication rejected by user for addr '+q.addr);
+    } else if (req.pathname=='/login-test') {
+        send(response, 200, LOGIN_TEST_HTML);
+    } else {
         send(response, 404, 'Not found');
     }
 }
