@@ -9,7 +9,7 @@ podTemplate(label: 'ethauth-builder', containers: [
         def scmVars = checkout scm
 
         sh "docker build -t ethauth-test:${scmVars.GIT_COMMIT} ."
-        sh "docker run --rm -t ethauth-test:${scmVars.GIT_COMMIT}"
+        sh "docker run --rm -t ethauth-test:${scmVars.GIT_COMMIT} npm run test"
 
         if (env.BRANCH_NAME == "master") {
           def awsRegistry = "${env.aws_account_id}.dkr.ecr.eu-central-1.amazonaws.com"
