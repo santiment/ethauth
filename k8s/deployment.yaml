@@ -1,0 +1,28 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: ethauth-master
+  labels:
+    app: ethauth
+    branch: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ethauth
+      branch: master
+  template:
+    metadata:
+      labels:
+        app: ethauth
+        branch: master
+    spec:
+      containers:
+      - name: ethauth-master
+        image: 913750763724.dkr.ecr.eu-central-1.amazonaws.com/ethauth:master
+        env:
+          - name: PARITY_URL
+            valueFrom:
+              secretKeyRef:
+                name: ethauth-env
+                key: parityUrl
