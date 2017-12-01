@@ -12,11 +12,18 @@ podTemplate(label: 'ethauth-builder', containers: [
         sh "docker run --rm -t ethauth-test:${scmVars.GIT_COMMIT} npm run test"
 
         if (env.BRANCH_NAME == "master") {
-          def awsRegistry = "${env.aws_account_id}.dkr.ecr.eu-central-1.amazonaws.com"
-          docker.withRegistry("https://${awsRegistry}", "ecr:eu-central-1:ecr-credentials") {
-            sh "docker build -t ${awsRegistry}/ethauth:${env.BRANCH_NAME} -t ${awsRegistry}/ethauth:${scmVars.GIT_COMMIT} ."
-            sh "docker push ${awsRegistry}/ethauth:${env.BRANCH_NAME}"
-            sh "docker push ${awsRegistry}/ethauth:${scmVars.GIT_COMMIT}"
+          withCredentials([
+            string(
+              credentialsId: 'aws_account_id',
+              variable: 'aws_account_id'
+            )
+          ]) {
+            def awsRegistry = "${env.aws_account_id}.dkr.ecr.eu-central-1.amazonaws.com"
+            docker.withRegistry("https://${awsRegistry}", "ecr:eu-central-1:ecr-credentials") {
+              sh "docker build -t ${awsRegistry}/ethauth:${env.BRANCH_NAME} -t ${awsRegistry}/ethauth:${scmVars.GIT_COMMIT} ."
+              sh "docker push ${awsRegistry}/ethauth:${env.BRANCH_NAME}"
+              sh "docker push ${awsRegistry}/ethauth:${scmVars.GIT_COMMIT}"
+            }
           }
         }
       }
