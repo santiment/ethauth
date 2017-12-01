@@ -2,8 +2,9 @@ const { send } = require('micro')
 const url = require('url');
 const Web3 = require('web3');
 
-//const web3 = new Web3("http://localhost:8545");
-const web3 = new Web3("https://parity:gYiJHXmom3qtmU6SlVdt+aS1xjMhI7W8P7+BJwjHOXE5@parity.stage.internal.santiment.net");
+const PARITY_NODE = process.env.PARITY_URL || "http://localhost:8545";
+
+const web3 = new Web3(PARITY_NODE);
 
 const SIGNIN_MSG = {
     en : "Please, login as %s",
