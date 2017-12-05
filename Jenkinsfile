@@ -8,7 +8,7 @@ podTemplate(label: 'ethauth-builder', containers: [
       container('docker') {
         def scmVars = checkout scm
 
-        sh "docker build -t ethauth-test:${scmVars.GIT_COMMIT} ."
+        sh "docker build -t ethauth-test:${scmVars.GIT_COMMIT} -f Dockerfile-test ."
         sh "docker run --rm -t ethauth-test:${scmVars.GIT_COMMIT} npm run test"
 
         if (env.BRANCH_NAME == "master") {
