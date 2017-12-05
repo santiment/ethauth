@@ -18,10 +18,13 @@
   },
   "homepage": "https://github.com/santiment/ethauth#readme",
   "dependencies": {
-    "chai-string": "^1.4.0",
+    "chai": "^4.1.2",
     "micro": "^9.0.0",
-    "mocha": "^4.0.1",
-    "seneca-jsonrest-api": "^0.3.1",
     "web3": "^1.0.0-beta.24"
+  },
+  "devDependencies": {
+    "chai-string": "^1.4.0",
+    "mocha": "^4.0.1",
+    "seneca-jsonrest-api": "^0.3.1"
   }
 }
