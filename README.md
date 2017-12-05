@@ -1,4 +1,4 @@
-# Ethauth - web3 authentication bridge API for authentication with MetaMask/Mist
+# Ethauth - web3 bridge API for authentication with MetaMask/Mist
 
 A small service, which exposes some web3 APIs, like signature validation and SAN balance checking for a given address. The service depends on having a parity JSON-RPC node, which it uses for some of the API calls.
 
