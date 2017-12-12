@@ -12,7 +12,7 @@ const SAN_TOKEN = new web3.eth.Contract(abi_balanceOf, '0x7C5A0CE9267ED19B22F8ca
 
 function recoverAddress({sign, hash}){
     const recovered = web3.eth.accounts.recover(hash, sign);
-    return { recovered };
+    return { "recovered": recovered };
 }
 
 module.exports = async function (request, response) {
