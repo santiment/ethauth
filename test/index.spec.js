@@ -19,7 +19,7 @@ describe('recover', function() {
         }
       }
     );
-    expect(response.recovered).to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
+    expect(JSON.parse(response).recovered).to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
   });
 
   it("should recover some random address if the signature and the hash does not match", async function() {
@@ -32,7 +32,7 @@ describe('recover', function() {
         }
       }
     );
-    expect(response.recovered).not.to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
+    expect(JSON.parse(response).recovered).not.to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
   });
 
   after(function() {
