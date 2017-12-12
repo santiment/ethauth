@@ -15,11 +15,11 @@ describe('recover', function() {
       url + "/recover", {
         qs: {
           hash: "0x1da44b586eb0729ff70a73c326926f6ed5a25f5b056e7f47fbc6e58d86871655",
-          sig: "0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a0291c"
+          sign: "0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a0291c"
         }
       }
     );
-    expect(response).to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
+    expect(JSON.parse(response).recovered).to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
   });
 
   it("should recover some random address if the signature and the hash does not match", async function() {
@@ -28,11 +28,11 @@ describe('recover', function() {
       url + "/recover", {
         qs: {
           hash: "0xsome_random_hash",
-          sig: "0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a0291c"
+          sign: "0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a0291c"
         }
       }
     );
-    expect(response).not.to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
+    expect(JSON.parse(response).recovered).not.to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
   });
 
   after(function() {
