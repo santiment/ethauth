@@ -10,9 +10,9 @@ const abi_balanceOf = [{"constant":true,"inputs":[{"name":"_owner","type":"addre
 
 const SAN_TOKEN = new web3.eth.Contract(abi_balanceOf, '0x7C5A0CE9267ED19B22F8cae653F198e3E8daf098');
 
-function recoverAddress({sig, hash}){
-    const recovered = web3.eth.accounts.recover(hash,sig);
-    return recovered;
+function recoverAddress({sign, hash}){
+    const recovered = web3.eth.accounts.recover(hash, sign);
+    return { recovered };
 }
 
 module.exports = async function (request, response) {
