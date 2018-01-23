@@ -18,11 +18,13 @@ function recoverAddress({sign, hash}){
 module.exports = async function (request, response) {
     let req = url.parse(request.url, true);
     let q = req.query;
-
     switch(req.pathname) {
       case '/san_balance':
         const san_balance = await SAN_TOKEN.methods.balanceOf(q.addr).call();
         return send(response, 200, san_balance);
+      case '/san_historic_balance':
+        const san_historic_balance = await SAN_TOKEN.methods.balanceOf(q.addr).call(q.blocknr);
+        return send(response, 200, san_historic_balance);
       case '/recover':
         return send(response, 200, recoverAddress(q));
       default:
