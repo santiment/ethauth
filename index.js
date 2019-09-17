@@ -30,6 +30,18 @@ const abi_decimals = [
   }
 ]
 
+const abi_totalSupply = [
+  {
+    constant: true,
+    inputs: [],
+    name: "totalSupply",
+    outputs: [{ name: "", type: "uint256" }],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  }
+]
+
 const SAN_TOKEN = new web3.eth.Contract(
   abi_balanceOf,
   "0x7C5A0CE9267ED19B22F8cae653F198e3E8daf098"
@@ -40,9 +52,14 @@ function recoverAddress({ sign, hash }) {
   return { recovered: recovered }
 }
 
-async function getTokenDecimals({ contract }) {
+async function tokenDecimals({ contract }) {
   const tokenContract = new web3.eth.Contract(abi_decimals, contract)
   return tokenContract.methods.decimals().call()
+}
+
+async function totalSupply({ contract }) {
+  const tokenContract = new web3.eth.Contract(abi_totalSupply, contract)
+  return tokenContract.methods.totalSupply().call()
 }
 
 module.exports = async function(request, response) {
@@ -54,9 +71,11 @@ module.exports = async function(request, response) {
       const san_balance = await SAN_TOKEN.methods.balanceOf(q.addr).call()
       return send(response, 200, san_balance)
     case "/decimals":
-      const decimals = await getTokenDecimals(q)
-      console.log(decimals)
+      const decimals = await tokenDecimals(q)
       return send(response, 200, decimals)
+    case "/total_supply":
+      const supply = await totalSupply(q)
+      return send(response, 200, supply)
     case "/recover":
       return send(response, 200, recoverAddress(q))
     default:
