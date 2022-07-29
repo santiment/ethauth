@@ -1,6 +1,9 @@
 const { send } = require("micro")
 const url = require("url")
 const Web3 = require("web3")
+const ethers = require('ethers')
+const { verifyMessage } = require('@ambire/signature-validator')
+
 
 const PARITY_NODE =
   process.env.PARITY_URL ||
@@ -62,6 +65,21 @@ async function totalSupply({ contract }) {
   return tokenContract.methods.totalSupply().call()
 }
 
+async function verify({signer, message, signature}) {
+  const provider = new ethers.providers.JsonRpcProvider(PARITY_NODE)
+
+
+  const isValidSig = await verifyMessage({
+    signer: signer,
+    message: message,
+    signature: signature,
+    // this is needed so that smart contract signatures can be verified
+    provider: provider,
+  })
+
+  return isValidSig
+}
+
 module.exports = async function(request, response) {
   let req = url.parse(request.url, true)
   let q = req.query
@@ -78,6 +96,9 @@ module.exports = async function(request, response) {
       return send(response, 200, supply)
     case "/recover":
       return send(response, 200, recoverAddress(q))
+    case "/verify":
+      const res = await verify(q)
+      return send(response, 200, res.toString())
     default:
       return send(response, 404, "Not found")
   }
