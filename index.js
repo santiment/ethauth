@@ -97,8 +97,8 @@ module.exports = async function(request, response) {
     case "/recover":
       return send(response, 200, recoverAddress(q))
     case "/verify":
-      const res = await verify(q)
-      return send(response, 200, res.toString())
+      const is_valid = await verify(q)
+      return send(response, 200, is_valid.toString())
     default:
       return send(response, 404, "Not found")
   }
