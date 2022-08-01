@@ -1,6 +1,6 @@
-FROM node:8.9.1-alpine AS builder
+FROM node:18-alpine AS builder
 
-RUN apk update && apk upgrade && apk add --no-cache git python make g++
+RUN apk update && apk upgrade && apk add --no-cache git python3 make g++
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY package-lock.json /app/package-lock.json
 
 RUN npm install --production
 
-FROM node:8.9.1-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 

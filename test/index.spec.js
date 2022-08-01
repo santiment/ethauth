@@ -19,7 +19,8 @@ describe('recover', function() {
         }
       }
     );
-    expect(JSON.parse(response).recovered).to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
+    expect(JSON.parse(response).recovered).to.equal("0xCdb2650352a8612604D97a471efF284852b7e857");
+    service.close();
   });
 
   it("should recover some random address if the signature and the hash does not match", async function() {
@@ -32,10 +33,27 @@ describe('recover', function() {
         }
       }
     );
-    expect(JSON.parse(response).recovered).not.to.equal("0x2c7536E3605D9C16a7a3D7b1898e529396a65c23");
+    expect(JSON.parse(response).recovered).not.to.equal("0xCdb2650352a8612604D97a471efF284852b7e857");
+    service.close();
   });
 
-  after(function() {
-    service.close();
+  it("should verify smart contract signature", async function() {
+    if (process.env.PARITY_URL) {
+      const url = await listen(service);
+      const response = await request(
+        url + "/verify", {
+          qs: {
+            signer: "0xb6190eB2Aa9BCF4fB6981fFF1eB9043f30b14364",
+            signature: "0x000000000000000000000000000000000000000000000000000000000003f480000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000042d61c275a2f3df573f5c16eba3d20cec5e1fcb3190c6e181407d9afa6569b032c197e39b15638fd7a0ec1608aea67643685ecab1a8c3a4d58ec60f484a97f14a91b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000042333142b540c3940ae45aadf1be440560b7d5e82546ebc340b255d6afb23017170c7917c21e49af04c30d794f346740bb743ddb416b5316752ea66f0ae9f4a6b91c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000ff3f6d14df43c112ab98834ee1f82083e07c26bf02",
+            message: "My email is john@doe.com"
+          }
+        }
+      );
+      console.log(response["valid"])
+      expect(response).to.equal("true");
+      service.close();
+    } else {
+      this.skip();
+    }
   });
 });
