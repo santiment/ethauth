@@ -68,7 +68,6 @@ async function totalSupply({ contract }) {
 async function verify({signer, message, signature}) {
   const provider = new ethers.providers.JsonRpcProvider(PARITY_NODE)
 
-
   const isValidSig = await verifyMessage({
     signer: signer,
     message: message,
@@ -97,8 +96,8 @@ module.exports = async function(request, response) {
     case "/recover":
       return send(response, 200, recoverAddress(q))
     case "/verify":
-      const is_valid = await verify(q)
-      return send(response, 200, is_valid.toString())
+      const isValid = await verify(q)
+      return send(response, 200, {is_valid: isValid})
     default:
       return send(response, 404, "Not found")
   }

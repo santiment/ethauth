@@ -49,8 +49,8 @@ describe('recover', function() {
           }
         }
       );
-      console.log(response["valid"])
-      expect(response).to.equal("true");
+      const res = JSON.parse(response);
+      expect(res.is_valid).to.equal(true);
       service.close();
     } else {
       this.skip();
